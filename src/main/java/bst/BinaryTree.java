@@ -1,6 +1,6 @@
 package bst;
 
-public class BinaryTree {
+public class BinaryTree{
     public Node root;
 
     public BinaryTree() {
@@ -40,5 +40,65 @@ public class BinaryTree {
         }
 
         return parent;  // Return an instance of Node that contains the specified value, which represents a leaf node.
+    }
+
+    /**
+     *
+     * @param parent the root of Tree.
+     * @param value the value which we want to delete
+     */
+    public Node remove(Node parent, int value) {
+        int count = 0;
+        if( parent == null )
+            return null;
+
+        if( value.compareTo(parent.value) < 0 ){
+            parent.left = remove( parent.left , value );
+            return parent;
+        }
+        else if( value.compareTo(parent.value) > 0 ){
+            parent.right = remove( parent.right, value );
+            return parent;
+        }
+        else{   // key == node->key
+
+            // 待删除节点左子树为空的情况
+            if( parent.left == null ){
+                Node rightNode = parent.right;
+                parent.right = null;
+                count --;
+                return rightNode;
+            }
+
+            // 待删除节点右子树为空的情况
+            if( parent.right == null ){
+                Node leftNode = parent.left;
+                parent.left = null;
+                count--;
+                return leftNode;
+            }
+
+            // 待删除节点左右子树均不为空的情况
+
+            // 找到比待删除节点大的最小节点, 即待删除节点右子树的最小节点
+            // 用这个节点顶替待删除节点的位置
+            Node successor = new Node(minimum(parent.right));
+            count ++;
+
+            successor.right = removeMin(parent.right);
+            successor.left = parent.left;
+
+            parent.left = parent.right = null;
+            count --;
+
+            return successor;
+        }
+
+    }
+
+
+
+    public int compareTo(int value) {
+        return this.root.value - value;
     }
 }
